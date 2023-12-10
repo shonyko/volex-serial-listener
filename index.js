@@ -58,21 +58,12 @@ socket.on('connect', _ => {
 	register();
 });
 
-function onConnAccept(data, _) {
+socket.on('pair_accept', (data, cb) => {
+	if (data == null) {
+		console.log('Credentials are required, got null');
+		return cb?.({ success: false, err: 'Credentials are required' });
+	}
 	const toSend = `[cmd]${[data.mac, data.ssid, data.pass].join('|')}`;
 	sendData(toSend);
-}
-
-const cmdHandlers = new Map();
-cmdHandlers.set('pair_accept', onConnAccept);
-
-socket.on('msg', ({ cmd, data }, cb) => {
-	console.log(`Received: ${data}`);
-	const json = JSON.parse(data);
-	if (!cmdHandlers.has(cmd)) {
-		console.log(`No handler defined for: ${cmd}`);
-		return cb?.({ success: false, err: 'No handler defined for that commnad' });
-	}
-
-	cmdHandlers.get(cmd)(json, cb);
+	cb?.({ success: true });
 });
