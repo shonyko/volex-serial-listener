@@ -34,10 +34,10 @@ const getPort = openPort(onDataRecv);
 
 import { io } from 'socket.io-client';
 import { Events, Services } from './enums.js';
+import { BROKER_ADDR } from './config.js';
 
-const broker_addr = process.env.BROKER ?? 'localhost:3000';
-console.log(`Broker addr: ${broker_addr}`);
-const socket = io(`ws://${broker_addr}`);
+console.log(`Broker addr: ${BROKER_ADDR}`);
+const socket = io(BROKER_ADDR);
 
 function register() {
 	socket.emit(
